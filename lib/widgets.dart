@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:html';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/net.dart';
+import 'package:flutter_application_1/net_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_application_1/lab.dart';
 
@@ -16,7 +16,7 @@ class NetImageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       // width: 250,
-      height: 500,
+      height: 450,
       // color: Colors.blue[500],
       child: (isInitialized)
           ? Image(
@@ -52,7 +52,7 @@ class InputTextWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text((links.isNotEmpty)
+    return SelectableText((links.isNotEmpty)
           ? links.last
           : "null");
   }

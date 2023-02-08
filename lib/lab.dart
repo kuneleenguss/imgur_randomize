@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:html';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/net.dart';
+import 'package:flutter_application_1/net_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_application_1/widgets.dart';
 
@@ -49,8 +49,10 @@ class _MainWidgetState extends State<MainWidget> {
   bool isInitialized = false;
   final links = <String>[];
 
+  NetRepository netRepository = NetRepository();
 
-  void getUrl() {
+
+  void updateWidget() {
     setState(() {});
   }
 
@@ -108,20 +110,27 @@ class _MainWidgetState extends State<MainWidget> {
   }
 
   void getRandomUrl() async {
-    isLoaded = false;
-    isInitialized = true;
-    getUrl();
+    setState(() {
+      isLoaded = false;
+      isInitialized = true;
+    });
+    // updateWidget();
+    
+    url = await netRepository.getResponse();
 
-    url = await Net().getResponse();
-    isLoaded = true;
-    links.add(url.toString());
-    getUrl();
+    setState(() {
+      isLoaded = true;
+      links.add(url.toString());
+    });
+    // updateWidget();
   }
 
   void getPreviousUrl() {
-    links.removeAt(links.length - 1);
-    url = links.elementAt(links.length - 1);
-    getUrl();
+    setState(() {
+      links.removeAt(links.length - 1);
+      url = links.elementAt(links.length - 1);
+    });
+    // updateWidget();
   }
 
 }

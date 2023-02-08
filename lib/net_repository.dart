@@ -5,17 +5,17 @@ import 'package:universal_io/io.dart';
 import 'package:http/http.dart' as http;
 
 
-class Net {
+class NetRepository {
   final String charAll =
       "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-  final host = "https://i.imgur.com/";
+  final _host = "https://i.imgur.com/";
 
-  var response;
+  var _response;
 
   // HttpClient client = HttpClient();
 
-  String getRandom() {
+  String _getRandom() {
     var path = "";
     for (var i = 0; i < 5; i++) {
       path = path + charAll[Random().nextInt(charAll.length)];
@@ -26,13 +26,13 @@ class Net {
   }
 
   Future<String> getResponse() async {
-    response = await http.get(Uri.parse(host + getRandom()));
+    _response = await http.get(Uri.parse(_host + _getRandom()));
     
-    if (response.contentLength == 503) {
+    if (_response.contentLength == 503) {
       await getResponse();
     }
 
-    return response.request.url.toString();
+    return _response.request.url.toString();
   }
 
   // while (true) {
