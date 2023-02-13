@@ -79,16 +79,17 @@ class GenerateButtonWidget extends StatelessWidget {
 }
 
 class PreviousButtonWidget extends StatelessWidget {
-  const PreviousButtonWidget({Key? key, required this.links, required this.onPressed}) : super(key: key);
+  const PreviousButtonWidget({Key? key, required this.links, required this.isLoaded, required this.onPressed}) : super(key: key);
 
   final List<String> links;
+  final bool isLoaded;
   final void Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
         iconSize: 40,
-        onPressed: (links.length > 1)
+        onPressed: (links.length > 1 && isLoaded)
           ? onPressed
           : null,
         icon: Icon(

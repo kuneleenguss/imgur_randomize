@@ -97,6 +97,7 @@ class _MainWidgetState extends State<MainWidget> {
                   }),
                 PreviousButtonWidget(
                   links: links,
+                  isLoaded: isLoaded,
                   onPressed: () {
                     getPreviousUrl();
                   },
