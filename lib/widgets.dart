@@ -1,22 +1,24 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/net_model.dart';
 import 'package:flutter_application_1/net_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_application_1/lab.dart';
+import 'package:flutter_application_1/app.dart';
+import 'package:provider/provider.dart';
 
 class NetImageWidget extends StatelessWidget {
-  const NetImageWidget({Key? key, required this.isInitialized, required this.isLoaded, required this.url}) : super(key: key);
-
-  final bool isInitialized;
-  final bool isLoaded;
-  final String? url;
+  const NetImageWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var net = context.watch<NetModel>();
+
+    final bool isInitialized = net.isInitialized;
+    final bool isLoaded = net.isLoaded;
+    final String? url = net.url;
+
     return Container(
-      // width: 250,
       height: 450,
-      // color: Colors.blue[500],
       child: (isInitialized)
           ? Image(
               image: NetworkImage(url.toString()),
@@ -32,44 +34,38 @@ class NetImageWidget extends StatelessWidget {
               errorBuilder: (BuildContext context, Object exception,
                   StackTrace? stackTrace) {
                 return Center(
-                    // child: const Text('Check if your URL is correct'));
                     child: CircularProgressIndicator());
               },
             )
           : Center(
-            // child: const Text("Type URL in the field below")
-            child: const Text("Press the button to start randomize")
-            ),
+              child: const Text("Press the button to start randomize")),
     );
   }
 }
 
 class InputTextWidget extends StatelessWidget {
-  const InputTextWidget({Key? key, required this.links}) : super(key: key);
-
-  final List<String> links;
+  const InputTextWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SelectableText((links.isNotEmpty)
-          ? links.last
-          : "null");
+    var net = context.watch<NetModel>();
+    final List<String> links = net.links;
+
+    return SelectableText((links.isNotEmpty) ? links.last : "null");
   }
 }
 
 class GenerateButtonWidget extends StatelessWidget {
-  const GenerateButtonWidget({Key? key, required this.isLoaded, required this.onPressed}) : super(key: key);
-
-  final bool isLoaded;
-  final void Function() onPressed;
+  const GenerateButtonWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final bool isLoaded = context.select<NetModel, bool>((value) => value.isLoaded);
+
     return IconButton(
         iconSize: 40,
-        onPressed: (isLoaded)
-          ? onPressed
-          : null,
+        onPressed:
+            (isLoaded) ? () => context.read<NetModel>().getImageUrl() : null,
         icon: Icon(
           Icons.refresh,
           color: Colors.blue,
@@ -78,118 +74,22 @@ class GenerateButtonWidget extends StatelessWidget {
 }
 
 class PreviousButtonWidget extends StatelessWidget {
-  const PreviousButtonWidget({Key? key, required this.links, required this.isLoaded, required this.onPressed}) : super(key: key);
-
-  final List<String> links;
-  final bool isLoaded;
-  final void Function() onPressed;
+  const PreviousButtonWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final List<String> links = context.select<NetModel, List<String>>((value) => value.links);
+    // var net = context.watch<NetModel>();
+    // final List<String> links = net.links;
+
     return IconButton(
         iconSize: 40,
-        onPressed: (links.length > 1 && isLoaded)
-          ? onPressed
-          : null,
+        onPressed: (links.length > 1) ? () => context.read<NetModel>().getPreviousUrl() : null,
         icon: Icon(
           Icons.arrow_back_ios_new_rounded,
           color: Colors.blue,
         ));
   }
 }
-
-// class TextFieldWidget extends StatelessWidget {
-//   const TextFieldWidget({Key? key}) : super(key: key);
-
-//   final String? url;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return TextField(
-//         // controller: url,
-//         decoration: InputDecoration(
-//           border: OutlineInputBorder(),
-//           labelText: 'Url',
-//         ),
-//         onSubmitted: (String value) {
-//           url = value;
-//           getUrl();
-//         });
-//   }
-// }
-
-// Widget netImageWidget() {
-//     return Container(
-//       // width: 250,
-//       height: 500,
-//       // color: Colors.blue[500],
-//       child: (
-//        isInitialized)
-//           ? Image(
-//               image: NetworkImage(url.toString()),
-//               loadingBuilder: (BuildContext context, Widget child,
-//                   ImageChunkEvent? loadingProgress) {
-//                 if (isloaded && loadingProgress == null) {
-//                   return child;
-//                 }
-//                 return Center(
-//                   child: CircularProgressIndicator(),
-//                 );
-//               },
-//               errorBuilder: (BuildContext context, Object exception,
-//                   StackTrace? stackTrace) {
-//                 return Center(
-//                     // child: const Text('Check if your URL is correct'));
-//                     child: CircularProgressIndicator());
-//               },
-//             )
-//           : Center(child: const Text("Type URL in the field below")),
-//     );
-//   }
-
-//   Widget inputTextWidget() {
-//     // return Text(url.toString());
-//     return Text((links.isNotEmpty)
-//           ? links.last
-//           : "null");
-    
-//   }
-
-//   Widget textFieldWidget() {
-//     return TextField(
-//         // controller: url,
-//         decoration: InputDecoration(
-//           border: OutlineInputBorder(),
-//           labelText: 'Url',
-//         ),
-//         onSubmitted: (String value) {
-//           url = value;
-//           getUrl();
-//         });
-//   }
-
-//   Widget generateButtonWidget() {
-//     return IconButton(
-//         iconSize: 40,
-//         onPressed: (isloaded)
-//           ? getRandomUrl
-//           : null,
-//         icon: Icon(
-//           Icons.refresh,
-//           color: Colors.blue,
-//         ));
-//   }
-
-//   Widget previousButtonWidget() {
-//     return IconButton(
-//         iconSize: 40,
-//         onPressed: (links.length > 1)
-//           ? getPreviousUrl
-//           : null,
-//         icon: Icon(
-//           Icons.arrow_back_ios_new_rounded,
-//           color: Colors.blue,
-//         ));
-//   }
 
 
